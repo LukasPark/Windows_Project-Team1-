@@ -16,7 +16,7 @@ int _tmain(int argc, TCHAR* argv[]){ //여기 메인임ㅋ
 		ListProcessInfo();
 
 		break;
-		//I'm Choi
+		//I'm Choitest
 
 	}
 	return 0;
