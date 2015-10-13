@@ -17,7 +17,7 @@ int _tmain(int argc, TCHAR* argv[]){ //여기 메인임ㅋ
 
 		break;
 		//I'm Choitest
-
+		//I'm Lukas
 	}
 	return 0;
 }
