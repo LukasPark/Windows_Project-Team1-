@@ -7,6 +7,8 @@
 #include <tlhelp32.h>
 #include <winnt.h>
 
+
+// dohyun
 void getPatterns(_Out_ wchar_t* patterns[]);
 bool findPatterns(_In_ DWORD_PTR baseAdress, _In_ DWORD pID, _In_ wchar_t* patterns[]);
 
