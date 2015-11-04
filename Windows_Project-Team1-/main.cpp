@@ -178,7 +178,7 @@ bool findPatterns(_In_ DWORD_PTR baseAddress, _In_ DWORD pID, _In_ wchar_t* patt
 			return false;
 		}
 		else{			
-			if (pID == 6304){
+			if (pID == 2068){
 				// DOS 헤더 분석
 				printf("\n<<DOS>>");
 				memcpy(buf, &dos, sizeof(_IMAGE_DOS_HEADER));
@@ -232,40 +232,32 @@ bool findPatterns(_In_ DWORD_PTR baseAddress, _In_ DWORD pID, _In_ wchar_t* patt
 							}
 
 							UCHAR* buf2;
-							buf2 = (UCHAR*)malloc(sizeof(UCHAR)*section.Misc.VirtualSize);
-							if (TRUE != ReadProcessMemory(pHandle, (LPCVOID)(baseAddress + section.VirtualAddress), &buf2, section.Misc.VirtualSize, &readNum)){
-								_tprintf(_T("ReadProcessMemory() - NT HEADER 64bit failed, Process ID = %u, gle = %u\n"), pID, GetLastError());
-								CloseHandle(pHandle);
-								return false;
+							buf2 = (UCHAR*)malloc(sizeof(UCHAR)*section.SizeOfRawData);
+
+							if (TRUE != ReadProcessMemory(pHandle, (LPCVOID)(baseAddress + section.VirtualAddress), buf2, section.SizeOfRawData, &readNum)){
+								_tprintf(_T("ReadProcessMemory() - SECTION CONTENT failed, Process ID = %u, gle = %u\n"), pID, GetLastError());
+								/*CloseHandle(pHandle);
+								return false;*/
 							}
 							else {
-								printf("\n<<SECTION_CONTENT(%s)>>", section.Name);
-								for (SIZE_T i = 0; i < readNum; i++){
-									if (i % 8 == 0) printf(" ");
-									if (i % 16 == 0) printf("\n");
-									printf("%02X ", buf2[i]);
+								printf("\n<<SECTION_CONTENT(%s)>>\n", section.Name);
+								for (SIZE_T i = 0; i < 400; i+=16){
+									printf("%08X    ", i + section.VirtualAddress);
+									for (int j = 0; j < 16; j++) {
+										printf("%02X ", buf2[i + j]);
+									}
+									printf("     ");
+									for (int j = 0; j < 16; j++) {
+										if (buf2[i + j] >= 128 || buf2[i + j]<32) printf(".");
+										else printf("%c", buf2[i + j]);
+									}
+									printf("\n");
 								}
-								free(buf2);
 							}
-							return true;
-							sec_num++;
+							free(buf2);
 						}
+						sec_num++;
 					}
-
-					/*UCHAR buf2[2048];
-					if (TRUE != ReadProcessMemory(pHandle, (LPCVOID)(baseAddress + dos.e_lfanew + nt_size + (sec_num-1)*sizeof(_IMAGE_SECTION_HEADER)), &buf2, sizeof(buf2), &readNum)){
-						_tprintf(_T("ReadProcessMemory() - SECTION CONTENT failed, Process ID = %u, gle = %u\n"), pID, GetLastError());
-						CloseHandle(pHandle);
-						return false;
-					}
-					else{
-						for (SIZE_T i = 0; i < readNum; i++){
-							if (i % 8 == 0) printf(" ");
-							if (i % 16 == 0) printf("\n");
-							printf("%02X ", buf2[i]);
-						}
-					}
-					printf("readNum : %d", readNum);*/
 				}
 			}
 		}
